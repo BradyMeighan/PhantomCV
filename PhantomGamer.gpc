@@ -1,0 +1,80 @@
+
+#pragma METAINFO("Phantom Gamer", 1, 0, "Anonymous")
+
+fix32 rightStickX;
+fix32 rightStickY;
+int16 autoFire;
+fix32 playerInputLimiterX = 0.6;
+fix32 playerInputLimiterY = 0.5;
+
+main {
+    // GCV feedback data was updated
+    if(gcv_ready())
+	{
+        // Read the GCV feedback data into variables
+        gcv_read(0, &rightStickX);
+		gcv_read(4, &rightStickY);
+		gcv_read(8, &autoFire);
+		//rightStickY = rightStickY;
+		//printf("gpc value x = %f", rightStickX);
+		//printf("gpc value y = %f", rightStickY);
+    }
+	if(get_val(BUTTON_8)){
+		fix32 tempX1 = (fix32)get_actual(STICK_1_X);
+		fix32 tempY1 = (fix32)get_actual(STICK_1_Y);
+		if (rightStickX > 0.0){
+			tempX1 = tempX1 * playerInputLimiterX;
+			tempY1 =  tempY1 * playerInputLimiterY;
+		}
+		tempX1 += (fix32)rightStickX;
+		tempY1 += (fix32)rightStickY;
+		if(get_actual(BUTTON_5))
+		{
+			tempY1 += 24.0;
+		}
+		if (tempX1 < -100.00) {
+			tempX1 = -100.00;
+		}
+		
+		if (tempX1 > 100.00) {
+			tempX1 = 100.00;
+		}
+		
+		if (tempY1 < -100.00) {
+			tempY1 = -100.00;
+		}
+		
+		if (tempY1 > 100.00) {
+			tempY1 = 100.00;
+		}
+		
+		set_val(STICK_1_X, tempX1);
+		set_val(STICK_1_Y, tempY1);
+	}
+	/*
+	if(get_val(BUTTON_8)){
+		fix32 tempX = (fix32)get_actual(STICK_1_X);
+		fix32 tempY = (fix32)get_actual(STICK_1_Y);
+		if(get_val(BUTTON_5)){
+			tempX -= 3.0;
+			tempY += 32.0;
+		}
+		tempX += (fix32)rightStickX;
+		tempY += (fix32)rightStickY;
+		set_val(STICK_1_X, tempX);
+		set_val(STICK_1_Y, tempY);
+	}
+	*/
+	if(get_val(BUTTON_8)) {
+		if(autoFire!=0) {
+			//combo_run(AutoFire);
+		}
+	}
+}
+
+combo AutoFire {
+	wait(15);
+	set_val(BUTTON_5, 100.00);
+	
+}
+
